@@ -1,6 +1,13 @@
 import matplotlib.pyplot as plt
 import csv
 
+"""
+Short script that uses pyplot to plot the percentage of relevant webapges 
+for each round of the fully classified dataset.
+
+NOTE: User of program must edit paths accordingly 
+"""
+
 # put csv file into list
 with open(r'C:\JG_STC_Work\crawleva\CSVresults\output_classification.csv', encoding="utf8") as csv_file:
     reader = csv.reader(csv_file, delimiter = ",")

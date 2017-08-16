@@ -6,18 +6,27 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
 from sklearn.cross_validation import KFold
 from sklearn.metrics import confusion_matrix, f1_score
-from sklearn.feature_extraction.text import TfidfTransformer
-from sklearn.naive_bayes import BernoulliNB
-from sklearn.svm import SVC
+
+"""
+Trains a classifier using features extracted from webpage URLs anmd titles 
+in order to predict whether a future webpage is relevant or irrelevant.
+
+Uses multinomial naive Bayes and produces a confusion matrix and F1 score to 
+display the results of tweaking the parameters of the classifier. 
+
+NOTE: User of program must edit paths accordingly 
+"""
 
 NEWLINE = '\n'
 SKIP_FILES = {'cmds'}
 
-
 """
 Takes a file path, iterates recursively through all files in path,
-and yields each email body contained in the path.  Allows for moving of 
-example data into directories
+and yields textual content from crawler contained in the path.  Allows for moving 
+of data into directories
+
+Args:
+    path: path containing parsed keywords from crawl results
 """
 def read_files(path):
     for root, dir_names, file_names in os.walk(path):
@@ -40,12 +49,12 @@ def read_files(path):
                     yield file_path, content
 
 """
-Uses Panda library to turn email data into ideal array format 
+Uses Panda library to turn data into ideal array format 
 for classifier
 
 Args:
-    path: path containing email files
-    classification: 
+    path: path containing parsed keywords from crawl results
+    classification: marker indicating relevant or not relevant
 Returns: 
     data_frame: DataFrame from all files in path
 """              
@@ -59,14 +68,15 @@ def build_data_frame(path, classification):
     data_frame = DataFrame(rows, index=index)
     return data_frame
 
+# classifications of data
 R = 'relevant'
 NR = 'not relevant'
 
-# training set of relevant, non relevant, and maybe webpages 
+# training set of relevant and not relevant webpages
 # arranged by (PATH, CLASSIFICATION)
 SOURCES = [
-    (r'C:\JG_STC_Work\Crawler Classification\WebpageData\YES',       R),
-    (r'C:\JG_STC_Work\Crawler Classification\WebpageData\NO',      NR),
+    (r'C:\JGSTCWork\Crawler Classification\WebpageData\YES',       R),
+    (r'C:\JGSTCWork\Crawler Classification\WebpageData\NO',      NR),
 ]
 
 # add training set to data frame
@@ -76,16 +86,17 @@ for path, classification in SOURCES:
 
 data = data.reindex(numpy.random.permutation(data.index)) # shuffle the dataset
 
+# Pipeline consists of a count vectorizer and a classifier to
 # learn vocabulary and extract word count features
 pipeline = Pipeline([
-    ('count_vectorizer',   CountVectorizer()),
+    ('count_vectorizer',   CountVectorizer(ngram_range=(1,  3))), # looking for n-gram frequency
     ('classifier',         MultinomialNB())])
 
 pipeline.fit(data['text'].values, data['class'].values)
-examples = ['neo jpl', 'venus NASA', 'black hole']
-pipeline.predict(examples)
+# examples = ['neo jpl', 'venus NASA', 'black hole']
+# pipeline.predict(examples)
 
-# save the trained model 
+# save the trained model to use in AccuracyCalc.py
 from sklearn.externals import joblib
 joblib.dump(pipeline, 'multinomial_classifier.pkl') 
 
@@ -103,7 +114,7 @@ for train_indices, test_indices in k_fold:
     predictions = pipeline.predict(test_text)
 
     confusion += confusion_matrix(test_y, predictions)
-    score = f1_score(test_y, predictions, pos_label=NR)
+    score = f1_score(test_y, predictions, pos_label=R)
     scores.append(score)
 
 print('Total pages classified:', len(data))
