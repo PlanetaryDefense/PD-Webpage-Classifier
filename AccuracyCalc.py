@@ -3,7 +3,8 @@ import csv
 import re
 
 """
-Uses the trained classifier to predict whether or not a webpage from a full set of webcrawler results is relevant or not.  The accuracy of each round is then printed to a text document.
+Uses the trained classifier to predict whether or not a webpage from a full set of webcrawler results is relevant or not.  
+The accuracy of each round is then printed to a text document.
 
 NOTE: User of program must edit paths accordingly 
 """
@@ -51,7 +52,7 @@ def writeEvaluation(evalArr):
     Args:
         evalArr: array containing results of crawler evaluation per round
     """
-    with open(r'C:\JGSTCWork\crawleva\CSVresults\output_classification.csv', "w") as output:
+    with open('/Users/yjiang/Documents/nutch_data/classification/output_classification.csv', "w") as output:
         writer = csv.writer(output, lineterminator='\n')
         writer.writerows(evalArr)
 
@@ -59,7 +60,7 @@ def writeEvaluation(evalArr):
 pipeline = joblib.load('multinomial_classifier.pkl') 
 
 # put csv file into list
-with open(r'C:\JGSTCWork\crawleva\eva_0729_test_so.csv', encoding="utf8") as csv_file:
+with open('/Users/yjiang/Documents/nutch_data/pageEva/eva_0729_test_so.csv', encoding="utf8") as csv_file:
     reader = csv.reader(csv_file, delimiter = ",")
     data = list(reader)
     

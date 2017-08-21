@@ -9,7 +9,7 @@ NOTE: User of program must edit paths accordingly
 """
 
 # put csv file into list
-with open(r'C:\JG_STC_Work\crawleva\CSVresults\output_classification.csv', encoding="utf8") as csv_file:
+with open('/Users/yjiang/Documents/nutch_data/classification/output_classification.csv', encoding="utf8") as csv_file:
     reader = csv.reader(csv_file, delimiter = ",")
     data = list(reader)
 

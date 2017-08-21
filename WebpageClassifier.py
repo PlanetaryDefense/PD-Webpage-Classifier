@@ -75,8 +75,8 @@ NR = 'not relevant'
 # training set of relevant and not relevant webpages
 # arranged by (PATH, CLASSIFICATION)
 SOURCES = [
-    (r'C:\JGSTCWork\Crawler Classification\WebpageData\YES',       R),
-    (r'C:\JGSTCWork\Crawler Classification\WebpageData\NO',      NR),
+    ('/Users/yjiang/Documents/nutch_data/classification/YES',       R),
+    ('/Users/yjiang/Documents/nutch_data/classification/NO',      NR),
 ]
 
 # add training set to data frame
@@ -89,7 +89,7 @@ data = data.reindex(numpy.random.permutation(data.index)) # shuffle the dataset
 # Pipeline consists of a count vectorizer and a classifier to
 # learn vocabulary and extract word count features
 pipeline = Pipeline([
-    ('count_vectorizer',   CountVectorizer(ngram_range=(1,  3))), # looking for n-gram frequency
+    ('count_vectorizer',   CountVectorizer(ngram_range=(1,  2))), # looking for n-gram frequency
     ('classifier',         MultinomialNB())])
 
 pipeline.fit(data['text'].values, data['class'].values)
